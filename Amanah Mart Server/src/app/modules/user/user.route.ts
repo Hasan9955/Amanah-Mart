@@ -1,5 +1,7 @@
 import { Router } from "express";
 import { userControllers } from "./user.controller";
+import authValidation from "../../middleware/authValidation";
+import { UserRole } from "@prisma/client";
 
 
 
@@ -8,7 +10,7 @@ const router = Router();
 
 router.get('/', userControllers.getAll)
 
-router.get('/me/:id', userControllers.getMe)
+router.get('/my-profile', authValidation(UserRole.ADMIN, UserRole.CUSTOMER, UserRole.VENDOR), userControllers.myProfile)
 
 router.post('/', userControllers.createUser)
 

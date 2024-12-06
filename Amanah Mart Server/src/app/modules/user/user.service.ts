@@ -1,6 +1,6 @@
 import { prisma } from "../../utils/prisma"
 import bcrypt from 'bcrypt';
-import jwt, { Secret } from 'jsonwebtoken';
+import jwt, { JwtPayload, Secret } from 'jsonwebtoken';
 import { generateToken } from "../../utils/generateToken";
 import config from "../../config";
 
@@ -53,8 +53,9 @@ const getAll = async ( ) => {
 
 }
 
-const getMe = async (id: string) => {
+const myProfile = async (user: JwtPayload) => {
 
+    const id = user?.id;
     const result = await prisma.user.findUniqueOrThrow({
         where: {
             id
@@ -85,7 +86,7 @@ const deleteUser = async ( ) => {
 export const userServices = {
     createUser,
     getAll,
-    getMe,
+    myProfile,
     updateUser,
     deleteUser
 }

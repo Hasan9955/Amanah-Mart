@@ -34,8 +34,9 @@ const getAll = catchAsync(async ( req, res ) => {
     })
 })
 
-const getMe = catchAsync(async ( req, res ) => {
-    const result = await userServices.getMe(req.params.id)
+const myProfile = catchAsync(async ( req, res ) => {
+
+    const result = await userServices.myProfile(req.user)
     
     sendResponse(res, {
         statusCode: 200,
@@ -68,7 +69,7 @@ const deleteUser = catchAsync(async ( req, res ) => {
 export const userControllers = {
     createUser,
     getAll,
-    getMe,
+    myProfile,
     updateUser,
     deleteUser
 }
