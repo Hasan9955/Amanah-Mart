@@ -131,8 +131,12 @@ const changePassword = async (user: JwtPayload, payload: {
 
 }
 
-
+ 
 const forgotPassword = async (payload: {email: string}) => {
+
+    if(!payload.email){
+        throw new Error("Email is required!")
+    }
 
     const userData = await prisma.user.findUniqueOrThrow({
         where: {
@@ -162,6 +166,10 @@ const forgotPassword = async (payload: {email: string}) => {
 
 
 const resetPassword = async (token: string, payload: {email: string, password: string}) => {
+
+    if(!token){
+        throw new Error("Token not found!")
+    }
 
     const userData = await prisma.user.findUniqueOrThrow({
         where: {
