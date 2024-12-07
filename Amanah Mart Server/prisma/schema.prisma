@@ -10,12 +10,14 @@ datasource db {
 model User {
   id           String         @id @default(uuid())
   email        String         @unique
+  name         String
   password     String
   role         UserRole
   image        String?        @default("https://i.ibb.co.com/8MNRgGS/anonymous-person.png")
   address      String
   phoneNumber  String
   isDeleted    Boolean        @default(false)
+  isVerified   Boolean        @default(false)
   createdAt    DateTime       @default(now())
   updatedAt    DateTime       @updatedAt
   shop         Shop?
@@ -32,9 +34,14 @@ model Shop {
   id             String     @id @default(uuid())
   name           String
   logo           String
+  bannerImage    String?
+  address        String
+  contactEmail   String
+  contactPhone   String
   vendorId       String     @unique
   vendor         User       @relation(fields: [vendorId], references: [id])
   description    String
+  status ShopStatus
   totalFollowers Int        @default(0)
   createdAt      DateTime   @default(now())
   updatedAt      DateTime   @updatedAt
@@ -44,9 +51,11 @@ model Shop {
   coupon         Coupon[]
 }
 
+
+
 model Category {
   id          String    @id @default(uuid())
-  name        String    @db.VarChar(255)
+  name        String    @db.VarChar(255) @unique
   description String?
   products    Product[]
 }
@@ -60,15 +69,18 @@ model Product {
   stock           Int
   image           String
   isFeatured      Boolean @default(false)
+  isAvailable     Boolean @default(true) 
+  averageRatings  Float?
+  purchaseCount   Int      @default(0)     
+  brand           String? @default("NO BRAND") 
+  expiryDate      DateTime? 
+  weight          Float?  
 
   categoryId String
   category   Category @relation(fields: [categoryId], references: [id])
 
   shopId String
-  shop   Shop   @relation(fields: [shopId], references: [id])
-
-  isAvailable    Boolean  @default(true)
-  averageRatings Float?
+  shop   Shop   @relation(fields: [shopId], references: [id]) 
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 
@@ -77,6 +89,22 @@ model Product {
   recentView RecentView[]
   wishlist   Wishlist[]
   cartItems  CartItems[]
+  variants    Variant[] 
+}
+
+model Variant {
+  id          String  @id @default(uuid())
+  productId   String
+  product     Product @relation(fields: [productId], references: [id])
+
+  size        String? 
+  color       String? 
+  price       Float  
+  stock       Int  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([productId, size, color]) 
 }
 
 model CartItems {
@@ -226,6 +254,12 @@ enum UserRole {
   ADMIN
   VENDOR
   CUSTOMER
+}
+
+enum ShopStatus {
+  ACTIVE
+  DEACTIVATED
+  BLOCKED
 }
 
 enum OrderStatus {

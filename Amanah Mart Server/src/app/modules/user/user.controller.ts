@@ -1,31 +1,20 @@
 import config from "../../config";
 import catchAsync from "../../utils/catchAsync";
+import pick from "../../utils/pick";
 import sendResponse from "../../utils/sendResponse";
+import { userFilterableFields } from "./user.constant";
 import { userServices } from "./user.service";
+import { userValidation } from "./user.validation";
 
 
 
-const createUser = catchAsync(async ( req, res ) => {
-     
-    const result = await userServices.createUser(req.body)
-    res.cookie('refreshToken', result.refreshToken, {
-        secure: config.env === 'production' ? true : false,
-        httpOnly: true
-    })
-
-    sendResponse(res, {
-        statusCode: 201,
-        message: "User created successfully!",
-        data: {
-            data: result.data,
-            token: result.token
-        }
-    })
-})
 
 
 const getAll = catchAsync(async ( req, res ) => {
-    const result = await userServices.getAll( )
+    const query = req.query;
+    const filterQuery = pick(query, userFilterableFields);
+    const options = pick(query, ['page', 'limit', 'sortBy', 'sortOrder']);
+    const result = await userServices.getAll(filterQuery, options);
     
     sendResponse(res, {
         statusCode: 200,
@@ -45,8 +34,34 @@ const myProfile = catchAsync(async ( req, res ) => {
     })
 })
 
+
+
+const createUser = catchAsync(async ( req, res ) => {
+      
+    req.body = userValidation.createUserValidation.parse(JSON.parse(req.body.data))
+    const result = await userServices.createUser(req)
+    res.cookie('refreshToken', result.refreshToken, {
+        secure: config.env === 'production' ? true : false,
+        httpOnly: true
+    })
+
+    sendResponse(res, {
+        statusCode: 201,
+        message: "User created successfully!",
+        data: {
+            data: result.data,
+            token: result.token
+        }
+    })
+})
+
+
 const updateUser = catchAsync(async ( req, res ) => {
-    const result = await userServices.updateUser()
+    
+    if(req.body.data){
+        req.body = userValidation.updateUserValidation.parse(JSON.parse(req.body.data))
+    }
+    const result = await userServices.updateUser(req)
     
     sendResponse(res, {
         statusCode: 200,
@@ -56,7 +71,17 @@ const updateUser = catchAsync(async ( req, res ) => {
 })
 
 const deleteUser = catchAsync(async ( req, res ) => {
-    const result = await userServices.deleteUser()
+    const result = await userServices.deleteUser(req.params.id)
+    
+    sendResponse(res, {
+        statusCode: 200,
+        message: "User delete successfully!",
+        data: result
+    })
+})
+
+const softDelete = catchAsync(async ( req, res ) => {
+    const result = await userServices.softDelete(req.user.id)
     
     sendResponse(res, {
         statusCode: 200,
@@ -71,5 +96,6 @@ export const userControllers = {
     getAll,
     myProfile,
     updateUser,
-    deleteUser
+    deleteUser,
+    softDelete
 }

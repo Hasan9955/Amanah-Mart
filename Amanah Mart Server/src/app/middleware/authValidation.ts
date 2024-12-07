@@ -16,8 +16,6 @@ const authValidation = (...roles: string[]) => {
             }
 
             const verifiedUser = verifyToken(token, config.access_secret as string)
-
-            console.log(verifiedUser);
             
             req.user = verifiedUser;
 
