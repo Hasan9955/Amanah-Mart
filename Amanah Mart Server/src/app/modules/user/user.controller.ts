@@ -75,7 +75,7 @@ const deleteUser = catchAsync(async ( req, res ) => {
     
     sendResponse(res, {
         statusCode: 200,
-        message: "User delete successfully!",
+        message: "User deleted successfully!",
         data: result
     })
 })
@@ -85,7 +85,7 @@ const softDelete = catchAsync(async ( req, res ) => {
     
     sendResponse(res, {
         statusCode: 200,
-        message: "User delete successfully!",
+        message: "User deleted successfully!",
         data: result
     })
 })

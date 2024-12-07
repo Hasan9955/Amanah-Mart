@@ -38,14 +38,17 @@ const getAll =  async (query: any, options: IPagination) => {
         })
     }
 
-    // console.dir(andConditions, { depth: Infinity });
+    // console.dir({andConditions}, { depth: Infinity });
 
     const whereCondition: Prisma.UserWhereInput = { AND: andConditions }
 
-    // console.dir(whereCondition, { depth: Infinity });
+    // console.dir({whereCondition}, { depth: Infinity });
 
     const result = await prisma.user.findMany({
-        where: whereCondition,
+        where: {
+            ...whereCondition, 
+            isDeleted: false
+        },
         skip: (Number(page) - 1) * Number(limit),
         take: Number(limit),
         orderBy: {
@@ -67,7 +70,10 @@ const getAll =  async (query: any, options: IPagination) => {
     }) 
 
     const total = await prisma.user.count({
-        where: whereCondition
+        where: {
+            ...whereCondition, 
+            isDeleted: false
+        }
     })
 
     return {
