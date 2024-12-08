@@ -14,7 +14,7 @@ const getAllShop = catchAsync(async (req, res) => {
     const result = await shopServices.getAllShop(filterQuery, options)
 
     sendResponse(res, {
-        statusCode: 201,
+        statusCode: 200,
         message: "Shops retrieved successfully!",
         data: result
     })
