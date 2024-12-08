@@ -211,7 +211,7 @@ model Notification {
   title      String
   message    String
   isRead     Boolean  @default(false)
-  redirectTo String
+  redirectTo String?
   createdAt  DateTime @default(now())
 }
 

@@ -1,0 +1,20 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.notificationRoutes = void 0;
+const express_1 = require("express");
+const notification_controller_1 = require("./notification.controller");
+const authValidation_1 = __importDefault(require("../../middleware/authValidation"));
+const client_1 = require("@prisma/client");
+const notification_validation_1 = require("./notification.validation");
+const zodValidation_1 = __importDefault(require("../../middleware/zodValidation"));
+const router = (0, express_1.Router)();
+router.get('/all-notification', notification_controller_1.NotificationControllers.getAllNotifications);
+router.get('/', (0, authValidation_1.default)(client_1.UserRole.ADMIN, client_1.UserRole.VENDOR, client_1.UserRole.CUSTOMER), notification_controller_1.NotificationControllers.getMyNotifications);
+router.get('/:id', notification_controller_1.NotificationControllers.getSingleNotification);
+router.post('/', (0, zodValidation_1.default)(notification_validation_1.createNotificationSchema), notification_controller_1.NotificationControllers.createNotification);
+router.patch('/:id', notification_controller_1.NotificationControllers.updateNotification);
+router.delete('/:id', notification_controller_1.NotificationControllers.deleteNotification);
+exports.notificationRoutes = router;

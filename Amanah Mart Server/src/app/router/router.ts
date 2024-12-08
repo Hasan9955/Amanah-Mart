@@ -5,6 +5,7 @@ import { shopRoutes } from "../modules/shop/shop.route";
 import { productRoutes } from "../modules/product/product.route";
 import { categoryRoutes } from "../modules/category/category.route";
 import { couponRoutes } from "../modules/coupon/coupon.route";
+import { notificationRoutes } from "../modules/notification/notification.route";
 
 
 const router = Router();
@@ -33,6 +34,10 @@ const allRoutes = [
     {
         path: '/coupon',
         route: couponRoutes
+    },
+    {
+        path: '/notification',
+        route: notificationRoutes
     },
 ]
 
