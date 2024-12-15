@@ -9,6 +9,10 @@ export const createCategoryValidation = z.object({
 })
 
 
+
+
+
+
 export const updateCategoryValidation = z.object({
     body: z.object({
         name: z.string(),
